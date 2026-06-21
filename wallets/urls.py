@@ -1,5 +1,8 @@
-from django.urls import path
+# wallets/urls.py
 
+from django.urls import path
 from .views import WalletAPIView
 
-urlpatterns = [path("", WalletAPIView.as_view())]
+urlpatterns = [
+    path("", WalletAPIView.as_view()),
+]
