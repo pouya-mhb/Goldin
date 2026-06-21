@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "ledger",
     "orders",
     "pricing",
+    "partners",
 ]
 
 AUTH_USER_MODEL = "accounts.User"
