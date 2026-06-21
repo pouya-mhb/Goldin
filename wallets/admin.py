@@ -1,3 +1,16 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import Wallet
+
+
+@admin.register(Wallet)
+class WalletAdmin(admin.ModelAdmin):
+
+    list_display = (
+        "id",
+        "user",
+        "available_balance",
+        "locked_balance",
+    )
+
+    search_fields = ("user__phone",)
