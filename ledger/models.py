@@ -31,6 +31,21 @@ class Journal(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
 
+    @property
+    def is_balanced(self):
+
+        debit_total = Decimal("0")
+
+        credit_total = Decimal("0")
+
+        for entry in self.entries.all():
+
+            debit_total += entry.debit
+
+            credit_total += entry.credit
+
+        return debit_total == credit_total
+
 
 class JournalEntry(models.Model):
 
@@ -45,16 +60,3 @@ class JournalEntry(models.Model):
     credit = models.DecimalField(max_digits=18, decimal_places=2, default=0)
 
     created_at = models.DateTimeField(auto_now_add=True)
-
-    @property
-    def is_balanced(self):
-        debit = Decimal(0)
-        credit = Decimal(0)
-
-        for entry in self.entries.all():
-
-            debit += entry.debit
-
-            credit += entry.credit
-
-        return debit == credit
