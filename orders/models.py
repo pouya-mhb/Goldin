@@ -13,13 +13,19 @@ class Order(models.Model):
     ]
 
     PENDING = "PENDING"
+    PROCESSING = "PROCESSING"
+    RESERVED = "RESERVED"
     COMPLETED = "COMPLETED"
     FAILED = "FAILED"
+    CANCELED = "CANCELED"
 
     STATUS_CHOICES = [
         (PENDING, PENDING),
+        (PROCESSING, PROCESSING),
+        (RESERVED, RESERVED),
         (COMPLETED, COMPLETED),
         (FAILED, FAILED),
+        (CANCELED, CANCELED),
     ]
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
