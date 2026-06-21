@@ -9,10 +9,24 @@ from .services import buy_gold, sell_gold
 
 from .models import Order
 
+from .models import IdempotencyKey
+
+from django.db import transaction
+
 
 class BuyGoldAPIView(APIView):
 
     def post(self, request):
+
+        key = request.headers.get("Idempotency-Key")
+
+        if not key:
+            return Response({"error": "Missing idempotency key"}, status=400)
+
+        existing = IdempotencyKey.objects.filter(key=key, user=request.user).first()
+
+        if existing:
+            return Response(existing.response_data)
 
         serializer = BuyGoldSerializer(data=request.data)
 
@@ -20,7 +34,13 @@ class BuyGoldAPIView(APIView):
 
         order = buy_gold(user=request.user, grams=serializer.validated_data["grams"])
 
-        return Response({"order_id": order.id, "status": order.status})
+        response = {"order_id": order.id, "status": order.status}
+
+        IdempotencyKey.objects.create(
+            key=key, user=request.user, response_data=response
+        )
+
+        return Response(response)
 
 
 class SellGoldAPIView(APIView):
