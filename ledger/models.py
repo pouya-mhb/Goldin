@@ -1,5 +1,6 @@
 from django.db import models
 from decimal import Decimal
+from django.conf import settings
 
 
 class Account(models.Model):
@@ -13,6 +14,9 @@ class Account(models.Model):
         ("VAULT", "Vault"),
     ]
 
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.CASCADE
+    )
     name = models.CharField(max_length=100)
 
     account_type = models.CharField(max_length=50, choices=ACCOUNT_TYPES)
