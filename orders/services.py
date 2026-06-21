@@ -10,6 +10,8 @@ from ledger.services import create_balanced_journal
 
 from .models import Order
 
+from partners.services import reserve_gold
+
 
 @transaction.atomic
 def buy_gold(user, grams):
@@ -96,6 +98,8 @@ def sell_gold(user, grams):
 
     if gold_wallet.available_grams < grams:
         raise ValueError("Insufficient gold balance")
+
+    reserve_gold(grams)
 
     price = get_current_price()
 
