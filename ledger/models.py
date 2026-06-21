@@ -71,3 +71,14 @@ class JournalEntry(models.Model):
     credit = models.DecimalField(max_digits=18, decimal_places=2, default=0)
 
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+class AuditLog(models.Model):
+
+    user = models.ForeignKey("accounts.User", on_delete=models.CASCADE)
+
+    action = models.CharField(max_length=100)
+
+    payload = models.JSONField()
+
+    created_at = models.DateTimeField(auto_now_add=True)
