@@ -56,7 +56,7 @@ def settle_sell_order(order_id):
     wallet.available_balance += order.total_price
     wallet.save()
 
-    gold_wallet = order.user.gold_wallet
+    gold_wallet = order.user.wallet.available_gold
 
     gold_wallet.available_grams -= order.grams
     gold_wallet.save()
