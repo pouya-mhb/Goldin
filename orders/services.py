@@ -10,7 +10,11 @@ from ledger.services import create_balanced_journal
 from partners.services import reserve_gold, release_reserved_gold
 
 from .models import Order
-from wallets.models import Wallet, GoldWallet
+from wallets.models import Wallet
+
+# =========================
+# BUY GOLD
+# =========================
 
 
 @transaction.atomic
@@ -21,16 +25,17 @@ def buy_gold(user, grams, idempotency_key=None):
     if grams <= 0:
         raise ValueError("Invalid grams")
 
-    # LOCK wallet (anti race condition)
+    # lock wallet
     wallet = Wallet.objects.select_for_update().get(user=user)
-    gold_wallet = GoldWallet.objects.select_for_update().get(user=user)
 
     price = get_current_price()
     total_price = grams * price.buy_price
 
+    # check balance
     if wallet.available_balance < total_price:
         raise ValueError("Insufficient balance")
 
+    # create order
     order = Order.objects.create(
         user=user,
         order_type=Order.BUY,
@@ -64,11 +69,10 @@ def buy_gold(user, grams, idempotency_key=None):
         ],
     )
 
+    # update wallet
     wallet.available_balance -= total_price
-    wallet.save(update_fields=["available_balance"])
-
-    gold_wallet.available_grams += grams
-    gold_wallet.save(update_fields=["available_grams"])
+    wallet.available_gold += grams
+    wallet.save(update_fields=["available_balance", "available_gold"])
 
     order.status = Order.COMPLETED
     order.save(update_fields=["status"])
@@ -86,6 +90,11 @@ def buy_gold(user, grams, idempotency_key=None):
     return order
 
 
+# =========================
+# SELL GOLD
+# =========================
+
+
 @transaction.atomic
 def sell_gold(user, grams):
 
@@ -95,16 +104,16 @@ def sell_gold(user, grams):
         raise ValueError("Invalid grams")
 
     wallet = Wallet.objects.select_for_update().get(user=user)
-    gold_wallet = GoldWallet.objects.select_for_update().get(user=user)
-
-    if gold_wallet.available_grams < grams:
-        raise ValueError("Insufficient gold")
-
-    # 🔥 RESERVE FROM VAULT (critical step)
-    reserve_gold(grams)
 
     price = get_current_price()
     total_price = grams * price.sell_price
+
+    # check gold
+    if wallet.available_gold < grams:
+        raise ValueError("Insufficient gold")
+
+    # reserve (for vault / partner system)
+    reserve_gold(wallet, grams)
 
     order = Order.objects.create(
         user=user,
@@ -140,11 +149,10 @@ def sell_gold(user, grams):
             ],
         )
 
-        gold_wallet.available_grams -= grams
+        # update wallet
+        wallet.available_gold -= grams
         wallet.available_balance += total_price
-
-        gold_wallet.save(update_fields=["available_grams"])
-        wallet.save(update_fields=["available_balance"])
+        wallet.save(update_fields=["available_gold", "available_balance"])
 
         order.status = Order.COMPLETED
         order.save(update_fields=["status"])
@@ -163,8 +171,8 @@ def sell_gold(user, grams):
 
     except Exception as e:
 
-        # rollback vault reserve
-        release_reserved_gold(grams)
+        # rollback reserve
+        release_reserved_gold(wallet, grams)
 
         order.status = Order.FAILED
         order.save(update_fields=["status"])
