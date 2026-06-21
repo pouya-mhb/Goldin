@@ -14,12 +14,19 @@ class Account(models.Model):
         ("VAULT", "Vault"),
     ]
 
+    CURRENCIES = [
+        ("IRT", "IRT"),
+        ("GOLD", "GOLD"),
+    ]
+
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.CASCADE
     )
     name = models.CharField(max_length=100)
 
     account_type = models.CharField(max_length=50, choices=ACCOUNT_TYPES)
+
+    currency = models.CharField(max_length=20, choices=CURRENCIES)
 
     created_at = models.DateTimeField(auto_now_add=True)
 
