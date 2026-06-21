@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "wallets",
     "gold_wallets",
     "ledger",
+    "orders",
 ]
 
 AUTH_USER_MODEL = "accounts.User"
