@@ -1,3 +1,60 @@
 from django.db import models
+from decimal import Decimal
 
-# Create your models here.
+
+class Account(models.Model):
+
+    ACCOUNT_TYPES = [
+        ("USER_IRT", "User IRT"),
+        ("USER_GOLD", "User Gold"),
+        ("COMPANY_IRT", "Company IRT"),
+        ("COMPANY_GOLD", "Company Gold"),
+        ("BANK", "Bank"),
+        ("VAULT", "Vault"),
+    ]
+
+    name = models.CharField(max_length=100)
+
+    account_type = models.CharField(max_length=50, choices=ACCOUNT_TYPES)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Journal(models.Model):
+
+    description = models.TextField()
+
+    reference_id = models.CharField(max_length=100, blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class JournalEntry(models.Model):
+
+    journal = models.ForeignKey(
+        Journal, on_delete=models.CASCADE, related_name="entries"
+    )
+
+    account = models.ForeignKey(Account, on_delete=models.CASCADE)
+
+    debit = models.DecimalField(max_digits=18, decimal_places=2, default=0)
+
+    credit = models.DecimalField(max_digits=18, decimal_places=2, default=0)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def is_balanced(self):
+        debit = Decimal(0)
+        credit = Decimal(0)
+
+        for entry in self.entries.all():
+
+            debit += entry.debit
+
+            credit += entry.credit
+
+        return debit == credit
