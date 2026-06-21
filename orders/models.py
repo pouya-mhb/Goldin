@@ -41,3 +41,14 @@ class Order(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=PENDING)
 
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+class IdempotencyKey(models.Model):
+
+    key = models.CharField(max_length=100, unique=True)
+
+    user = models.ForeignKey("accounts.User", on_delete=models.CASCADE)
+
+    response_data = models.JSONField(null=True, blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
