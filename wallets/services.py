@@ -1,32 +1,35 @@
-from decimal import Decimal
+# wallets/services.py
 
 from django.db import transaction
 
-from ledger.services import create_balanced_journal
 
-from ledger.models import Account
+@transaction.atomic
+def reserve_gold(wallet, grams):
+    """
+    Lock gold before selling
+    """
+    if wallet.available_gold < grams:
+        raise ValueError("Insufficient gold")
+
+    wallet.available_gold -= grams
+    wallet.locked_gold += grams
+    wallet.save()
 
 
 @transaction.atomic
-def deposit_money(user, amount):
-    amount = Decimal(str(amount))
-
-    wallet = user.wallet
-
-    bank_account = Account.objects.get(account_type="BANK")
-
-    user_account = Account.objects.get(user=user, account_type="USER_IRT")
-
-    create_balanced_journal(
-        description=f"Deposit {user.phone}",
-        entries=[
-            {"account": bank_account, "debit": amount},
-            {"account": user_account, "credit": amount},
-        ],
-    )
-
-    wallet.available_balance += amount
-
+def release_reserved_gold(wallet, grams):
+    """
+    Unlock gold if transaction fails
+    """
+    wallet.locked_gold -= grams
+    wallet.available_gold += grams
     wallet.save()
 
-    return wallet
+
+@transaction.atomic
+def confirm_gold_sale(wallet, grams):
+    """
+    Finalize sale: remove locked gold permanently
+    """
+    wallet.locked_gold -= grams
+    wallet.save()
