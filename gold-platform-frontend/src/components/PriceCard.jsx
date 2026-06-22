@@ -1,18 +1,18 @@
-export default function BalanceCard({
+export default function PriceCard({
     title,
-    value,
-    unit
+    value
 }) {
+
     return (
         <div className="card">
 
             <h3>{title}</h3>
 
             <div className="card-value">
-                {value}
+                {Number(value).toLocaleString()}
             </div>
 
-            <span>{unit}</span>
+            <span>تومان</span>
 
         </div>
     );

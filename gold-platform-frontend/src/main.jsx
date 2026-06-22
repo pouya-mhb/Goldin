@@ -1,9 +1,22 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+
+import "./index.css";
 import AppRouter from "./routes/AppRouter";
 
-ReactDOM.createRoot(document.getElementById("root")).render(
+import { AuthProvider } from "./context/AuthContext";
+
+ReactDOM.createRoot(
+  document.getElementById("root")
+).render(
+
   <React.StrictMode>
-    <AppRouter />
+
+    <AuthProvider>
+
+      <AppRouter />
+
+    </AuthProvider>
+
   </React.StrictMode>
 );

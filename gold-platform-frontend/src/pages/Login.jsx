@@ -1,41 +1,104 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import { login } from "../api/auth";
+import { useAuth } from "../context/AuthContext";
 
 export default function Login() {
+    const navigate = useNavigate();
+
+    const { loginUser } = useAuth();
+
     const [phone, setPhone] = useState("");
     const [password, setPassword] = useState("");
 
-    const handleLogin = async () => {
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        setLoading(true);
+        setError("");
+
         try {
-            const res = await login(phone, password);
+            const data = await login(phone, password);
 
-            localStorage.setItem("access", res.data.access);
-            localStorage.setItem("refresh", res.data.refresh);
+            loginUser(
+                data.access,
+                data.refresh
+            );
 
-            window.location.href = "/dashboard";
+            navigate("/dashboard");
+
         } catch (err) {
-            alert("Login failed");
+            console.error(err);
+
+            setError("شماره موبایل یا رمز عبور اشتباه است");
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
-        <div>
-            <h2>Login</h2>
+        <div className="login-page">
 
-            <input
-                placeholder="Phone"
-                onChange={(e) => setPhone(e.target.value)}
-            />
+            <div className="login-card">
 
-            <input
-                placeholder="Password"
-                type="password"
-                onChange={(e) => setPassword(e.target.value)}
-            />
+                <div className="logo-section">
+                    <h1>Goldin</h1>
+                    <p>سامانه خرید و فروش آنلاین طلا</p>
+                </div>
 
-            <button onClick={handleLogin}>
-                Login
-            </button>
+                <form onSubmit={handleSubmit}>
+
+                    <div className="form-group">
+
+                        <label>شماره موبایل</label>
+
+                        <input
+                            type="text"
+                            placeholder="09123456789"
+                            value={phone}
+                            onChange={(e) =>
+                                setPhone(e.target.value)
+                            }
+                        />
+
+                    </div>
+
+                    <div className="form-group">
+
+                        <label>رمز عبور</label>
+
+                        <input
+                            type="password"
+                            placeholder="********"
+                            value={password}
+                            onChange={(e) =>
+                                setPassword(e.target.value)
+                            }
+                        />
+
+                    </div>
+
+                    {error && (
+                        <div className="error-box">
+                            {error}
+                        </div>
+                    )}
+
+                    <button
+                        className="login-btn"
+                        disabled={loading}
+                    >
+                        {loading ? "در حال ورود..." : "ورود"}
+                    </button>
+
+                </form>
+
+            </div>
+
         </div>
     );
 }
