@@ -7,7 +7,7 @@ from pricing.services import get_current_price
 from ledger.models import Account, AuditLog
 from ledger.services import create_balanced_journal
 
-from wallets.services import reserve_gold, release_reserved_gold
+from wallets.services import reserve_gold, release_reserved_gold, confirm_gold_sale
 
 from .models import Order
 from wallets.models import Wallet
@@ -149,10 +149,10 @@ def sell_gold(user, grams):
             ],
         )
 
-        # update wallet
-        wallet.available_gold -= grams
+        # confirm reserved gold and update wallet
+        confirm_gold_sale(wallet, grams)
         wallet.available_balance += total_price
-        wallet.save(update_fields=["available_gold", "available_balance"])
+        wallet.save(update_fields=["available_balance"])
 
         order.status = Order.COMPLETED
         order.save(update_fields=["status"])
