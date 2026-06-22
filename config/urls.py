@@ -21,6 +21,7 @@ from django.urls import path
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
+    TokenBlacklistView,
 )
 
 urlpatterns = [
@@ -29,6 +30,7 @@ urlpatterns = [
     path("api/wallet/", include("wallets.urls")),
     path("api/token/", TokenObtainPairView.as_view()),
     path("api/token/refresh/", TokenRefreshView.as_view()),
+    path("api/token/logout/", TokenBlacklistView.as_view(), name="token_logout"),
     path("api/orders/", include("orders.urls")),
     path("api/wallet/", include("wallets.urls")),
     path("api/pricing/", include("pricing.urls")),

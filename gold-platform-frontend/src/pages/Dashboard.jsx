@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import client from "../api/client";
+import { useAuth } from "../context/AuthContext";
 
 import BalanceCard from "../components/BalanceCard";
 import PriceCard from "../components/PriceCard";
@@ -14,6 +16,9 @@ export default function Dashboard() {
     const [price, setPrice] = useState(null);
 
     const [orders, setOrders] = useState([]);
+
+    const { logoutUser } = useAuth();
+    const navigate = useNavigate();
 
     const loadData = async () => {
 
@@ -31,6 +36,11 @@ export default function Dashboard() {
         setPrice(priceRes.data);
 
         setOrders(orderRes.data);
+    };
+
+    const handleLogout = async () => {
+        await logoutUser();
+        navigate("/login");
     };
 
     useEffect(() => {
@@ -55,7 +65,15 @@ export default function Dashboard() {
             <header className="dashboard-header">
                 <div className="dashboard-hero">
                     <p className="eyebrow">پورتال معاملات طلا</p>
-                    <h1>داشبورد گلدین</h1>
+                    <div className="dashboard-top-row">
+                        <h1>داشبورد گلدین</h1>
+                        <button
+                            className="logout-btn"
+                            onClick={handleLogout}
+                        >
+                            خروج
+                        </button>
+                    </div>
                     <p className="dashboard-description">
                         وضعیت موجودی و قیمت‌ها را در یک نمای شفاف و سریع ببینید.
                     </p>

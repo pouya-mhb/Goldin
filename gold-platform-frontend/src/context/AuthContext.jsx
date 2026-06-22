@@ -1,4 +1,5 @@
 import { createContext, useContext, useState } from "react";
+import { logout } from "../api/auth";
 
 const AuthContext = createContext();
 
@@ -16,7 +17,16 @@ export function AuthProvider({ children }) {
         setIsAuthenticated(true);
     };
 
-    const logoutUser = () => {
+    const logoutUser = async () => {
+        const refresh = localStorage.getItem("refresh");
+
+        try {
+            if (refresh) {
+                await logout(refresh);
+            }
+        } catch (err) {
+            console.error("Logout failed:", err);
+        }
 
         localStorage.removeItem("access");
         localStorage.removeItem("refresh");
