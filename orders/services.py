@@ -7,7 +7,7 @@ from pricing.services import get_current_price
 from ledger.models import Account, AuditLog
 from ledger.services import create_balanced_journal
 
-from partners.services import reserve_gold, release_reserved_gold
+from wallets.services import reserve_gold, release_reserved_gold
 
 from .models import Order
 from wallets.models import Wallet
