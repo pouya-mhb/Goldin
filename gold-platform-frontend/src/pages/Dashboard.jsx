@@ -55,6 +55,12 @@ export default function Dashboard() {
 
     useEffect(() => {
         loadData();
+
+        const interval = setInterval(() => {
+            refreshDashboard();
+        }, 1000 * 60 * 60); // refresh every hour
+
+        return () => clearInterval(interval);
     }, []);
 
     if (!wallet || !price) {
@@ -80,9 +86,14 @@ export default function Dashboard() {
                                 امروز برای مدیریت سرمایه خود آماده هستید؟
                             </p>
                         </div>
-                        <button className="logout-btn" onClick={handleLogout}>
-                            خروج
-                        </button>
+                        <div className="dashboard-actions">
+                            <button className="refresh-btn" onClick={refreshDashboard}>
+                                به‌روزرسانی
+                            </button>
+                            <button className="logout-btn" onClick={handleLogout}>
+                                خروج
+                            </button>
+                        </div>
                     </div>
                     <p className="dashboard-description">
                         وضعیت موجودی و قیمت‌ها را در یک نمای شفاف و سریع ببینید.
