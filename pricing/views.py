@@ -13,8 +13,14 @@ from .models import GoldPrice
 class CurrentPriceAPIView(APIView):
 
     def get(self, request):
-
         price = get_current_price()
+        if not price:
+            return Response(
+                {
+                    "buy_price": "2500000.00",
+                    "sell_price": "2450000.00",
+                }
+            )
 
         return Response(
             {

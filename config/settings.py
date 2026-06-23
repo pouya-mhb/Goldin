@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+import os
 from pathlib import Path
 from corsheaders.defaults import default_headers
 
@@ -47,7 +48,7 @@ INSTALLED_APPS = [
     "gold_wallets",
     "ledger",
     "orders",
-    "pricing",
+    "pricing.apps.PricingConfig",
     "partners",
 ]
 
@@ -74,6 +75,11 @@ CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_HEADERS = list(default_headers) + [
     "Idempotency-Key",
 ]
+
+# Gold price scheduler and conversion settings
+GOLD_PRICE_USD_TO_TOMAN = int(os.getenv("GOLD_PRICE_USD_TO_TOMAN", "42000"))
+GOLD_PRICE_SPREAD_PERCENT = float(os.getenv("GOLD_PRICE_SPREAD_PERCENT", "1.0"))
+SCHEDULE_GOLD_PRICE_UPDATES = True
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
