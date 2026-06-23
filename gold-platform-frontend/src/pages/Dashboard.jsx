@@ -7,7 +7,9 @@ import { useAuth } from "../context/AuthContext";
 import BalanceCard from "../components/BalanceCard";
 import PriceCard from "../components/PriceCard";
 import TradeWidget from "../components/TradeWidget";
-import OrdersTable from "../components/OrdersTable";
+import OrdersTableEnhanced from "../components/OrdersTableEnhanced";
+import PriceChart from "../components/PriceChart";
+import PortfolioPerformance from "../components/PortfolioPerformance";
 import Toast from "../components/Toast";
 
 export default function Dashboard() {
@@ -16,6 +18,7 @@ export default function Dashboard() {
     const [price, setPrice] = useState(null);
     const [orders, setOrders] = useState([]);
     const [toast, setToast] = useState(null);
+    const [refreshTrigger, setRefreshTrigger] = useState(0);
 
     const { logoutUser } = useAuth();
     const navigate = useNavigate();
@@ -43,6 +46,11 @@ export default function Dashboard() {
     const showToast = (message, type = "success") => {
         setToast({ message, type });
         window.setTimeout(() => setToast(null), 4000);
+    };
+
+    const refreshDashboard = () => {
+        loadData();
+        setRefreshTrigger(prev => prev + 1);
     };
 
     useEffect(() => {
@@ -89,9 +97,13 @@ export default function Dashboard() {
                 <PriceCard title="قیمت فروش" value={price.sell_price} />
             </div>
 
-            <TradeWidget refresh={loadData} onToast={showToast} />
+            <PriceChart key={refreshTrigger} />
 
-            <OrdersTable orders={orders} />
+            <PortfolioPerformance />
+
+            <TradeWidget refresh={refreshDashboard} onToast={showToast} />
+
+            <OrdersTableEnhanced orders={orders} />
         </div>
     );
 }
