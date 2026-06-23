@@ -2,9 +2,11 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 
 import "./index.css";
+import "./styles/pages.css";
 import AppRouter from "./routes/AppRouter";
 
 import { AuthProvider } from "./context/AuthContext";
+
 
 ReactDOM.createRoot(
   document.getElementById("root")
