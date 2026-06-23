@@ -8,34 +8,31 @@ import BalanceCard from "../components/BalanceCard";
 import PriceCard from "../components/PriceCard";
 import TradeWidget from "../components/TradeWidget";
 import OrdersTable from "../components/OrdersTable";
+import Toast from "../components/Toast";
 
 export default function Dashboard() {
 
     const [wallet, setWallet] = useState(null);
-
     const [price, setPrice] = useState(null);
-
     const [orders, setOrders] = useState([]);
+    const [toast, setToast] = useState(null);
 
     const { logoutUser } = useAuth();
     const navigate = useNavigate();
 
     const loadData = async () => {
+        try {
+            const walletRes = await client.get("wallet/");
+            const priceRes = await client.get("pricing/current/");
+            const orderRes = await client.get("orders/history/");
 
-        const walletRes =
-            await client.get("wallet/");
-
-        const priceRes =
-            await client.get("pricing/current/");
-
-        const orderRes =
-            await client.get("orders/history/");
-
-        setWallet(walletRes.data);
-
-        setPrice(priceRes.data);
-
-        setOrders(orderRes.data);
+            setWallet(walletRes.data);
+            setPrice(priceRes.data);
+            setOrders(orderRes.data);
+        } catch (err) {
+            console.error(err);
+            setToast({ message: "خطا در بارگذاری اطلاعات. دوباره امتحان کنید.", type: "error" });
+        }
     };
 
     const handleLogout = async () => {
@@ -43,10 +40,13 @@ export default function Dashboard() {
         navigate("/login");
     };
 
+    const showToast = (message, type = "success") => {
+        setToast({ message, type });
+        window.setTimeout(() => setToast(null), 4000);
+    };
+
     useEffect(() => {
-
         loadData();
-
     }, []);
 
     if (!wallet || !price) {
@@ -59,18 +59,20 @@ export default function Dashboard() {
     }
 
     return (
-
         <div className="dashboard">
+            {toast && <Toast message={toast.message} type={toast.type} />}
 
             <header className="dashboard-header">
                 <div className="dashboard-hero">
                     <p className="eyebrow">پورتال معاملات طلا</p>
                     <div className="dashboard-top-row">
-                        <h1>داشبورد گلدین</h1>
-                        <button
-                            className="logout-btn"
-                            onClick={handleLogout}
-                        >
+                        <div>
+                            <h1>داشبورد گلدین</h1>
+                            <p className="dashboard-subtitle">
+                                امروز برای مدیریت سرمایه خود آماده هستید؟
+                            </p>
+                        </div>
+                        <button className="logout-btn" onClick={handleLogout}>
                             خروج
                         </button>
                     </div>
@@ -81,39 +83,15 @@ export default function Dashboard() {
             </header>
 
             <div className="grid">
-
-                <BalanceCard
-                    title="موجودی ریالی"
-                    value={wallet.irt_balance}
-                    unit="تومان"
-                />
-
-                <BalanceCard
-                    title="موجودی طلا"
-                    value={wallet.gold_balance}
-                    unit="گرم"
-                />
-
-                <PriceCard
-                    title="قیمت خرید"
-                    value={price.buy_price}
-                />
-
-                <PriceCard
-                    title="قیمت فروش"
-                    value={price.sell_price}
-                />
-
+                <BalanceCard title="موجودی ریالی" value={wallet.irt_balance} unit="تومان" />
+                <BalanceCard title="موجودی طلا" value={wallet.gold_balance} unit="گرم" />
+                <PriceCard title="قیمت خرید" value={price.buy_price} />
+                <PriceCard title="قیمت فروش" value={price.sell_price} />
             </div>
 
-            <TradeWidget
-                refresh={loadData}
-            />
+            <TradeWidget refresh={loadData} onToast={showToast} />
 
-            <OrdersTable
-                orders={orders}
-            />
-
+            <OrdersTable orders={orders} />
         </div>
     );
 }

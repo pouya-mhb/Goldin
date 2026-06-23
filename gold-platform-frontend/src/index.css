@@ -318,10 +318,54 @@ input[type="number"]::placeholder {
   color: rgba(226, 232, 240, 0.45);
 }
 
+.trade-description {
+  color: rgba(226, 232, 240, 0.72);
+  margin-top: 10px;
+  line-height: 1.7;
+}
+
+.input-error {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  background: rgba(248, 113, 113, 0.16);
+  border: 1px solid rgba(248, 113, 113, 0.28);
+  color: #fecaca;
+  font-size: 0.95rem;
+}
+
 .trade-buttons {
   display: flex;
   gap: 16px;
   margin-top: 24px;
+}
+
+.toast {
+  position: fixed;
+  top: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
+  min-width: min(420px, calc(100% - 32px));
+  padding: 16px 20px;
+  border-radius: 18px;
+  color: white;
+  font-weight: 600;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(12px);
+  text-align: center;
+}
+
+.toast-success {
+  background: rgba(52, 211, 153, 0.18);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  color: #d1fae5;
+}
+
+.toast-error {
+  background: rgba(248, 113, 113, 0.18);
+  border: 1px solid rgba(248, 113, 113, 0.35);
+  color: #fecaca;
 }
 
 .buy-btn,
@@ -333,7 +377,7 @@ input[type="number"]::placeholder {
   font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
 }
 
 .buy-btn {
@@ -344,6 +388,13 @@ input[type="number"]::placeholder {
 .sell-btn {
   background: linear-gradient(135deg, var(--warning), #dc2626);
   color: white;
+}
+
+.buy-btn:disabled,
+.sell-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  box-shadow: none;
 }
 
 .buy-btn:hover,
