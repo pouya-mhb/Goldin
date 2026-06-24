@@ -62,6 +62,26 @@ export default function Navigation() {
                                 اکانت
                             </Link>
                             <Link
+                                to="/dashboard"
+                                className={`nav-link ${isActive("/account") ? "active" : ""}`}
+                            >
+                                داشبورد
+                            </Link>
+                            <Link
+                                to="/payments"
+                                className={`nav-link ${isActive("/payments") ? "active" : ""}`}
+                            >
+                                پرداخت‌
+                            </Link>
+                            <Link to="/deposits"
+                                className={`nav-link ${isActive("/settings") ? "active" : ""}`}>
+                                واریزها
+                            </Link>
+                            <Link to="/withdrawals"
+                                className={`nav-link ${isActive("/settings") ? "active" : ""}`}>
+                                برداشت ها
+                            </Link>
+                            <Link
                                 to="/settings"
                                 className={`nav-link ${isActive("/settings") ? "active" : ""}`}
                             >

@@ -9,7 +9,9 @@ import Blog from "../pages/Blog";
 import Account from "../pages/Account";
 import Settings from "../pages/Settings";
 import Navigation from "../components/Navigation";
-
+import Payments from "../pages/Payments";
+import Deposits from "../pages/Deposits";
+import Withdrawals from "../pages/Withdrawals";
 import ProtectedRoute from "../components/ProtectedRoute";
 
 export default function AppRouter() {
@@ -62,6 +64,19 @@ export default function AppRouter() {
                             <Dashboard />
                         </ProtectedRoute>
                     }
+                />
+
+                <Route path="/payments"
+                    element={<Payments />} />
+
+                <Route
+                    path="/deposits"
+                    element={<Deposits />}
+                />
+
+                <Route
+                    path="/withdrawals"
+                    element={<Withdrawals />}
                 />
 
             </Routes>
