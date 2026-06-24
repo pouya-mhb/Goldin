@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "orders",
     "pricing.apps.PricingConfig",
     "partners",
+    "payments",
 ]
 
 AUTH_USER_MODEL = "accounts.User"
