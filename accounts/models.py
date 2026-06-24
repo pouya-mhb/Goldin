@@ -25,3 +25,17 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.phone
+
+
+class Meta:
+
+    constraints = [
+        models.UniqueConstraint(
+            fields=["account_type"],
+            condition=models.Q(user__isnull=True),
+            name="unique_system_account_type",
+        ),
+        models.UniqueConstraint(
+            fields=["user", "account_type"], name="unique_user_account_type"
+        ),
+    ]
