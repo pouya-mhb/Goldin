@@ -39,3 +39,35 @@ class Meta:
             fields=["user", "account_type"], name="unique_user_account_type"
         ),
     ]
+
+
+class AccountOpeningRequest(models.Model):
+
+    PENDING = "PENDING"
+    APPROVED = "APPROVED"
+    REJECTED = "REJECTED"
+
+    STATUS_CHOICES = [
+        (PENDING, "Pending"),
+        (APPROVED, "Approved"),
+        (REJECTED, "Rejected"),
+    ]
+
+    user = models.OneToOneField(
+        "accounts.User",
+        on_delete=models.CASCADE,
+        related_name="account_opening_request",
+    )
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default=PENDING,
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    reviewed_at = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.user.phone} - {self.status}"
