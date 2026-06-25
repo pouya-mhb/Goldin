@@ -4,10 +4,17 @@ import { useState } from "react";
 
 export default function Navigation() {
     const location = useLocation();
-    const { isAuthenticated, logoutUser } = useAuth();
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-    const isActive = (path) => location.pathname === path;
+    const {
+        isAuthenticated,
+        logoutUser,
+    } = useAuth();
+
+    const [mobileMenuOpen, setMobileMenuOpen] =
+        useState(false);
+
+    const isActive = (path) =>
+        location.pathname === path;
 
     const handleLogout = async () => {
         await logoutUser();
@@ -16,90 +23,192 @@ export default function Navigation() {
     return (
         <nav className="navbar">
             <div className="navbar-container">
-                <Link to="/" className="navbar-logo">
-                    <span className="logo-icon">◆</span> Goldin
+
+                <Link
+                    to="/"
+                    className="navbar-logo"
+                >
+                    <span className="logo-icon">
+                        ◆
+                    </span>
+                    Goldin
                 </Link>
 
                 <button
                     className="mobile-menu-btn"
-                    onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                    onClick={() =>
+                        setMobileMenuOpen(
+                            !mobileMenuOpen
+                        )
+                    }
                 >
                     ☰
                 </button>
 
-                <div className={`navbar-menu ${mobileMenuOpen ? "active" : ""}`}>
+                <div
+                    className={`navbar-menu ${mobileMenuOpen
+                        ? "active"
+                        : ""
+                        }`}
+                >
+
+                    {/* Public */}
+
                     <Link
                         to="/"
-                        className={`nav-link ${isActive("/") ? "active" : ""}`}
+                        className={`nav-link ${isActive("/")
+                            ? "active"
+                            : ""
+                            }`}
                     >
                         خانه
                     </Link>
+
                     <Link
                         to="/about"
-                        className={`nav-link ${isActive("/about") ? "active" : ""}`}
+                        className={`nav-link ${isActive("/about")
+                            ? "active"
+                            : ""
+                            }`}
                     >
                         درباره ما
                     </Link>
+
                     <Link
                         to="/blog"
-                        className={`nav-link ${isActive("/blog") ? "active" : ""}`}
+                        className={`nav-link ${isActive("/blog")
+                            ? "active"
+                            : ""
+                            }`}
                     >
                         بلاگ
                     </Link>
+
                     <Link
                         to="/contact"
-                        className={`nav-link ${isActive("/contact") ? "active" : ""}`}
+                        className={`nav-link ${isActive("/contact")
+                            ? "active"
+                            : ""
+                            }`}
                     >
                         ارتباط با ما
                     </Link>
 
+                    {/* Authenticated */}
+
                     {isAuthenticated && (
                         <>
                             <Link
-                                to="/account"
-                                className={`nav-link ${isActive("/account") ? "active" : ""}`}
-                            >
-                                اکانت
-                            </Link>
-                            <Link
                                 to="/dashboard"
-                                className={`nav-link ${isActive("/account") ? "active" : ""}`}
+                                className={`nav-link ${isActive(
+                                    "/dashboard"
+                                )
+                                    ? "active"
+                                    : ""
+                                    }`}
                             >
                                 داشبورد
                             </Link>
+
+                            <Link
+                                to="/account"
+                                className={`nav-link ${isActive(
+                                    "/account"
+                                )
+                                    ? "active"
+                                    : ""
+                                    }`}
+                            >
+                                اکانت
+                            </Link>
+
+                            <Link
+                                to="/open-account"
+                                className={`nav-link ${isActive(
+                                    "/open-account"
+                                )
+                                    ? "active"
+                                    : ""
+                                    }`}
+                            >
+                                افتتاح حساب
+                            </Link>
+
                             <Link
                                 to="/payments"
-                                className={`nav-link ${isActive("/payments") ? "active" : ""}`}
+                                className={`nav-link ${isActive(
+                                    "/payments"
+                                )
+                                    ? "active"
+                                    : ""
+                                    }`}
                             >
-                                پرداخت‌
+                                پرداخت‌ها
                             </Link>
-                            <Link to="/deposits"
-                                className={`nav-link ${isActive("/settings") ? "active" : ""}`}>
+
+                            <Link
+                                to="/deposits"
+                                className={`nav-link ${isActive(
+                                    "/deposits"
+                                )
+                                    ? "active"
+                                    : ""
+                                    }`}
+                            >
                                 واریزها
                             </Link>
-                            <Link to="/withdrawals"
-                                className={`nav-link ${isActive("/settings") ? "active" : ""}`}>
-                                برداشت ها
+
+                            <Link
+                                to="/withdrawals"
+                                className={`nav-link ${isActive(
+                                    "/withdrawals"
+                                )
+                                    ? "active"
+                                    : ""
+                                    }`}
+                            >
+                                برداشت‌ها
                             </Link>
+
                             <Link
                                 to="/settings"
-                                className={`nav-link ${isActive("/settings") ? "active" : ""}`}
+                                className={`nav-link ${isActive(
+                                    "/settings"
+                                )
+                                    ? "active"
+                                    : ""
+                                    }`}
                             >
                                 تنظیمات
                             </Link>
-                            <button className="nav-logout-btn" onClick={handleLogout}>
+
+                            <button
+                                className="nav-logout-btn"
+                                onClick={
+                                    handleLogout
+                                }
+                            >
                                 خروج
                             </button>
                         </>
                     )}
 
+                    {/* Guest */}
+
                     {!isAuthenticated && (
                         <>
-                            <Link to="/login" className="nav-link-btn login">
+                            <Link
+                                to="/login"
+                                className="nav-link-btn login"
+                            >
                                 ورود
                             </Link>
-                            <Link to="/dashboard" className="nav-link-btn signup">
-                                داشبورد
+
+                            <Link
+                                to="/signup"
+                                className="nav-link-btn signup"
+                            >
+                                ثبت نام
                             </Link>
                         </>
                     )}

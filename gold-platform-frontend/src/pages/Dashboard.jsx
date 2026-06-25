@@ -11,6 +11,7 @@ import OrdersTableEnhanced from "../components/OrdersTableEnhanced";
 import PriceChart from "../components/PriceChart";
 import PortfolioPerformance from "../components/PortfolioPerformance";
 import Toast from "../components/Toast";
+import AccountStatusCard from "../components/AccountStatusCard";
 
 export default function Dashboard() {
 
@@ -116,5 +117,23 @@ export default function Dashboard() {
 
             <OrdersTableEnhanced orders={orders} />
         </div>
+    );
+
+    const status = "PENDING";
+
+    return (
+
+        <div className="p-8">
+
+            <div className="grid grid-cols-3 gap-6">
+
+                <AccountStatusCard
+                    status={status}
+                />
+
+            </div>
+
+        </div>
+
     );
 }

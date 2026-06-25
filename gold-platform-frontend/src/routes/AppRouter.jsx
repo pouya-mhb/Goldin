@@ -13,6 +13,9 @@ import Payments from "../pages/Payments";
 import Deposits from "../pages/Deposits";
 import Withdrawals from "../pages/Withdrawals";
 import ProtectedRoute from "../components/ProtectedRoute";
+import AccountOpeningPage from "../pages/AccountOpeningPage";
+import Signup from "../pages/Signup";
+
 
 export default function AppRouter() {
 
@@ -28,8 +31,18 @@ export default function AppRouter() {
                 />
 
                 <Route
+                    path="/signup"
+                    element={<Signup />}
+                />
+
+                <Route
                     path="/login"
                     element={<Login />}
+                />
+
+                <Route
+                    path="/open-account"
+                    element={<AccountOpeningPage />}
                 />
 
                 <Route
@@ -81,6 +94,6 @@ export default function AppRouter() {
 
             </Routes>
 
-        </BrowserRouter>
+        </BrowserRouter >
     );
 }
